@@ -1,11 +1,29 @@
-#ifndef _BOARD_H_
-#define _BOARD_H_
+#ifndef BOARD_H_
+#define BOARD_H_
 
-////////////////////////////////////////////////////////////////////////////////
-///@detail This class contains the current state of the game and the game logic.
-////////////////////////////////////////////////////////////////////////////////
-class Board {
+#include <cstdint>
 
-};
+namespace connect4_3d
+{
+  typedef uint_fast64_t Bitboard;
+
+  typedef bool Player;
+
+  typedef struct BoardState
+  {
+    Player   curr_player;
+    Bitboard boards[2];
+  } BoardState;
+
+  //////////////////////////////////////////////////////////////////////////////
+  /// @param  _state the current state of the board
+  /// @param  _move  the move made, range between 0 to 15
+  /// @return the new state of the board
+  //////////////////////////////////////////////////////////////////////////////
+  BoardState move(const BoardState& _state, int _move);
+
+  bool isWinning(const BoardState& _state);
+}
+
 
 #endif
