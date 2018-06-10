@@ -13,7 +13,6 @@ void draw(const BoardState& state);
 
 int main(int argc, char const *argv[])
 {
-
 	BoardState state;
 	state.curr_player = 0;
 	state.boards[0] = state.boards[1] = 0;
@@ -24,7 +23,16 @@ int main(int argc, char const *argv[])
 		cout << "Player " << (state.curr_player + 1) << " move: ";
 		int move;
 		cin >> move;
-		state = connect4_3d::move(state, move);
+		if (move == -1) 
+			return 0;
+		else if (move == 111)
+			state = connect4_3d::rotateBoard90(state);
+		else if (move == 222)
+			state = connect4_3d::rotateBoard180(state);
+		else if (move == 333)
+			state = connect4_3d::reflectBoard(state);
+		else
+			state = connect4_3d::move(state, move);
 	}
 	draw(state);
 	cout << "Player " << (2 - state.curr_player) << " wins!" << endl;

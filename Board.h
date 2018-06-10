@@ -13,6 +13,12 @@ namespace connect4_3d
   {
     Player   curr_player;
     Bitboard boards[2];
+
+    bool operator==(const BoardState& other) const
+    {
+      return (boards[0] == other.boards[0] && boards[1] == other.boards[1]);
+    }
+
   } BoardState;
 
   //////////////////////////////////////////////////////////////////////////////
@@ -23,6 +29,12 @@ namespace connect4_3d
   BoardState move(const BoardState& _state, int _move);
 
   bool isWinning(const BoardState& _state);
+
+  BoardState rotateBoard90(const BoardState& state);
+
+  BoardState rotateBoard180(const BoardState& state);
+
+  BoardState reflectBoard(const BoardState& state);
 }
 
 

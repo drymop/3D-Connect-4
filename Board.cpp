@@ -1,5 +1,5 @@
+#include "BitUtils.h"
 #include "Board.h"
-
 
 namespace connect4_3d
 {
@@ -56,4 +56,69 @@ namespace connect4_3d
       (brd & brd >> 13 & brd >> 26 & brd >> 39 & 0x0000'0000'0000'1000ULL);
   }
 
+  /// annonymous namespace containing helper functions
+  /// for rotateBoard
+  namespace
+  {
+    Bitboard rotateBitboard90(Bitboard b)
+    {
+      Bitboard rotated_layer_0 = bit_utils::rotate(b & 0xffffUL);
+      Bitboard rotated_layer_1 = bit_utils::rotate(b >> 16 & 0xffffUL);
+      Bitboard rotated_layer_2 = bit_utils::rotate(b >> 32 & 0xffffUL);
+      Bitboard rotated_layer_3 = bit_utils::rotate(b >> 48 & 0xffffUL);
+
+      return rotated_layer_3 << 48 | 
+             rotated_layer_2 << 32 | 
+             rotated_layer_1 << 16 | 
+             rotated_layer_0;
+    }
+
+    Bitboard rotateBitboard180(Bitboard b)
+    {
+      Bitboard rotated_layer_0 = bit_utils::reverse(b & 0xffffUL);
+      Bitboard rotated_layer_1 = bit_utils::reverse(b >> 16 & 0xffffUL);
+      Bitboard rotated_layer_2 = bit_utils::reverse(b >> 32 & 0xffffUL);
+      Bitboard rotated_layer_3 = bit_utils::reverse(b >> 48 & 0xffffUL);
+
+      return rotated_layer_3 << 48 | 
+             rotated_layer_2 << 32 | 
+             rotated_layer_1 << 16 | 
+             rotated_layer_0;
+    }
+
+    Bitboard reflectBitboard(Bitboard b)
+    {
+      return (b & 0x000f'000f'000f'000fULL) << 12 |
+             (b & 0x00f0'00f0'00f0'00f0ULL) << 4  |
+             (b & 0x0f00'0f00'0f00'0f00ULL) >> 4  |
+             (b & 0xf000'f000'f000'f000ULL) >> 12;
+    }
+  }
+
+  BoardState rotateBoard90(const BoardState& state)
+  {
+    BoardState new_state;
+    new_state.curr_player = state.curr_player;
+    new_state.boards[0] = rotateBitboard90(state.boards[0]);
+    new_state.boards[1] = rotateBitboard90(state.boards[1]);
+    return new_state;
+  }
+
+  BoardState rotateBoard180(const BoardState& state)
+  {
+    BoardState new_state;
+    new_state.curr_player = state.curr_player;
+    new_state.boards[0] = rotateBitboard180(state.boards[0]);
+    new_state.boards[1] = rotateBitboard180(state.boards[1]);
+    return new_state;
+  }
+
+  BoardState reflectBoard(const BoardState& state)
+  {
+    BoardState new_state;
+    new_state.curr_player = state.curr_player;
+    new_state.boards[0] = reflectBitboard(state.boards[0]);
+    new_state.boards[1] = reflectBitboard(state.boards[1]);
+    return new_state;
+  }
 }
